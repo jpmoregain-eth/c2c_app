@@ -1,8 +1,9 @@
 import { Contact } from '../types';
 import { AGNES_API_KEY, AGNES_BASE_URL } from './config';
 
-const TIMEOUT_MS = 30000; // 30 second timeout
-const MAX_RETRIES = 1;
+const TIMEOUT_MS = 60000; // 60 second timeout for Agnes 2.0 Flash
+const MAX_RETRIES = 10; // Max 10 retries (prevents infinite loops)
+const RETRY_DELAY_MS = 3000; // 3 second delay between retries
 
 // Helper to validate email
 function isValidEmail(email: string): boolean {
@@ -76,7 +77,7 @@ export async function extractContactFromImage(imageUri: string): Promise<Partial
             'Authorization': `Bearer ${AGNES_API_KEY}`,
           },
           body: JSON.stringify({
-            model: 'agnes-1.5-flash',
+            model: 'agnes-2.0-flash',
             messages: [
               {
                 role: 'user',
@@ -147,8 +148,8 @@ export async function extractContactFromImage(imageUri: string): Promise<Partial
       console.error(`Attempt ${attempt + 1} failed:`, error);
       
       if (attempt < MAX_RETRIES) {
-        console.log('Retrying in 2 seconds...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log(`Retrying in ${RETRY_DELAY_MS/1000}s... (attempt ${attempt + 2}/${MAX_RETRIES + 1})`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
       }
     }
   }
