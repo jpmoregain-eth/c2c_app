@@ -1,97 +1,113 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Card2Contact
 
-# Getting Started
+React Native mobile app for scanning business cards and extracting contact information using AI.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
 
-## Step 1: Start Metro
+- **Camera Scanning**: Take photos of business cards using native camera
+- **AI Extraction**: Uses Agnes AI API to extract contact details from card images
+- **Local Storage**: Saves contacts locally using AsyncStorage
+- **Contact Management**: View, edit, and delete saved contacts
+- **CSV Export**: Export all contacts to CSV file for sharing
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- React Native CLI (0.86.0)
+- TypeScript
+- react-native-vision-camera (camera)
+- @react-native-async-storage/async-storage (local storage)
+- react-native-fs (file system)
+- react-native-share (CSV sharing)
+- react-native-paper (UI components)
+- @react-navigation/native-stack (navigation)
 
-```sh
-# Using npm
-npm start
+## Setup
 
-# OR using Yarn
-yarn start
+### Prerequisites
+
+- Node.js 18+
+- Android Studio + Android SDK
+- JDK 17
+
+### Installation
+
+```bash
+# Clone/navigate to project
+cd Card2Contact
+
+# Install dependencies
+npm install
+
+# Install Android dependencies
+cd android && ./gradlew clean && cd ..
+
+# Start Metro bundler
+npx react-native start
+
+# Run on Android (separate terminal)
+npx react-native run-android
 ```
 
-## Step 2: Build and run your app
+## Building APK
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+```bash
+cd android
 
-### Android
+# Debug APK
+./gradlew assembleDebug
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+# Release APK (requires signing config)
+./gradlew assembleRelease
 ```
 
-### iOS
+APK output: `android/app/build/outputs/apk/`
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## Project Structure
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+```
+Card2Contact/
+├── App.tsx                    # Entry point
+├── src/
+│   ├── components/            # Reusable UI components
+│   ├── screens/               # App screens
+│   │   ├── CameraScreen.tsx   # Camera + capture
+│   │   ├── ContactsScreen.tsx # Contact list + search + export
+│   │   ├── ContactDetailScreen.tsx # View/edit contact
+│   │   └── ProcessingScreen.tsx    # AI extraction + review
+│   ├── services/
+│   │   ├── ContactContext.tsx # Contact state management
+│   │   ├── aiService.ts     # Agnes AI API calls
+│   │   └── theme.ts         # App theme
+│   └── types/
+│       └── index.ts         # TypeScript types
+├── android/                   # Android project
+└── package.json
 ```
 
-Then, and every time you update your native dependencies, run:
+## Agnes AI API
 
-```sh
-bundle exec pod install
+The app uses Agnes AI for business card OCR:
+- Model: `agnes-1.5-flash`
+- Endpoint: `https://apihub.agnes-ai.com/v1/chat/completions`
+- API key is embedded in `src/services/aiService.ts`
+
+## Data Model
+
+```typescript
+interface Contact {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  phone: string;
+  email: string;
+  address: string;
+  imageUri?: string;
+  createdAt: number;
+  updatedAt: number;
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## License
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Personal use only - JPMoreGain Project

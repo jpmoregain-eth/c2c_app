@@ -1,6 +1,12 @@
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
 extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+include ':react-native-nitro-modules'
+project(':react-native-nitro-modules').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-nitro-modules/android')
+
+include ':react-native-nitro-image'
+project(':react-native-nitro-image').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-nitro-image/android')
 rootProject.name = 'Card2Contact'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
